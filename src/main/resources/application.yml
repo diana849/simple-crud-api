@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: simple-crud-api
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+  datasource:
+    generate-unique-name: false
+  sql:
+    init:
+      mode: always
+client:
+  zipcode:
+    url: https://api.zippopotam.us
