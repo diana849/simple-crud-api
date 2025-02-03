@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,10 +24,14 @@ public class Project {
 
     private String description;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "project_id")
-    private List<Task> taskList;
+    private List<Task> taskList = new ArrayList<>();
 
     @Version
     private Long version;
+
+    public void addTask(Task task) {
+        taskList.add(task);
+    }
 }

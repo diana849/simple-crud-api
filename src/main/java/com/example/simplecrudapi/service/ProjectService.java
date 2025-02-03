@@ -4,6 +4,7 @@ import com.example.simplecrudapi.dto.ProjectDTO;
 import com.example.simplecrudapi.exception.NotFoundException;
 import com.example.simplecrudapi.mapper.ProjectMapper;
 import com.example.simplecrudapi.repository.ProjectRepository;
+import com.example.simplecrudapi.repository.TaskRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class ProjectService implements BaseService<ProjectDTO> {
 
+    public static final String ERROR_MESSAGE = "Could not find project with id: ";
+
     private ProjectRepository projectRepository;
+
+    private TaskRepository taskRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -27,7 +32,7 @@ public class ProjectService implements BaseService<ProjectDTO> {
     @Transactional(readOnly = true)
     public ProjectDTO findById(Long id) {
         var project = projectRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Could not find project with id: " + id));
+                .orElseThrow(() -> new NotFoundException(ERROR_MESSAGE + id));
         return ProjectMapper.toProjectDTO(project);
     }
 
@@ -42,8 +47,19 @@ public class ProjectService implements BaseService<ProjectDTO> {
     @Transactional
     public void delete(Long id) {
         var project = projectRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Could not find project with id: " + id));
+                .orElseThrow(() -> new NotFoundException(ERROR_MESSAGE + id));
 
         projectRepository.delete(project);
+    }
+
+    @Transactional
+    public void addTaskToProject(Long id, Long taskId) {
+        var task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NotFoundException("Could not find task with id: " + taskId));
+
+        var project = projectRepository.findByIdForUpdate(id)
+                .orElseThrow(() -> new NotFoundException(ERROR_MESSAGE + id));
+
+        project.addTask(task);
     }
 }

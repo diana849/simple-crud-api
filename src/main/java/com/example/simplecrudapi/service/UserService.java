@@ -49,7 +49,7 @@ public class UserService implements BaseService<UserDTO> {
 
     @Transactional
     public void updateUserById(Long id, String zipCode) {
-        var user = userRepository.findByIdForUpdate(id)
+        var user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find user with id: " + id));
         user.setZipCode(zipCode);
     }

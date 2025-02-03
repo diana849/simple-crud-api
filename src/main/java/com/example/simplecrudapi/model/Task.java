@@ -23,10 +23,10 @@ public class Task {
 
     private String status;
 
-    @Version
-    private Long version;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Version
+    private Long version;
 }
