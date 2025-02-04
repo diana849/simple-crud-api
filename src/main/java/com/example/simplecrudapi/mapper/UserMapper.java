@@ -6,67 +6,16 @@ import com.example.simplecrudapi.dto.ExtendedUserDTO;
 import com.example.simplecrudapi.dto.PlaceDTO;
 import com.example.simplecrudapi.dto.UserDTO;
 import com.example.simplecrudapi.model.User;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.mapstruct.Mapper;
 
-import java.util.Collection;
-import java.util.Optional;
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserMapper {
+    UserDTO toUserDTO(User user);
 
-    public static UserDTO toUserDTO(User user) {
-        return UserDTO.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .zipCode(user.getZipCode())
-//                .taskList(Optional.ofNullable(user.getTaskList()).stream()
-//                        .flatMap(Collection::stream)
-//                        .map(TaskMapper::toTaskDTO)
-//                        .toList())
-                .build();
-    }
+    ExtendedUserDTO toExtendedUserDTO(User user, ZipCodeData zipCodeData);
 
-    public static ExtendedUserDTO toExtendedUserDTO(User user, ZipCodeData zipCodeData) {
-        return ExtendedUserDTO.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .zipCode(user.getZipCode())
-//                .taskList(Optional.ofNullable(user.getTaskList()).stream()
-//                        .flatMap(Collection::stream)
-//                        .map(TaskMapper::toTaskDTO)
-//                        .toList())
-                .country(zipCodeData.getCountry())
-                .places(Optional.ofNullable(zipCodeData.getPlaces()).stream()
-                        .flatMap(Collection::stream)
-                        .map(UserMapper::toPlaceDto)
-                        .toList())
-                .build();
-    }
+    User toUser(UserDTO userDTO);
 
-    public static User toUser(UserDTO userDTO) {
-        return User.builder()
-                .firstName(userDTO.getFirstName())
-                .lastName(userDTO.getLastName())
-                .email(userDTO.getEmail())
-                .zipCode(userDTO.getZipCode())
-//                .taskList(Optional.ofNullable(userDTO.getTaskList()).stream()
-//                        .flatMap(Collection::stream)
-//                        .map(TaskMapper::toTask)
-//                        .toList())
-                .build();
-    }
-
-    public static PlaceDTO toPlaceDto(Place place) {
-        return PlaceDTO.builder()
-                .placeName(place.getPlaceName())
-                .longitude(place.getLongitude())
-                .latitude(place.getLatitude())
-                .state(place.getState())
-                .build();
-    }
+    PlaceDTO toPlaceDto(Place place);
 }

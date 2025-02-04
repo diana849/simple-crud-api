@@ -18,14 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements BaseService<UserDTO> {
 
     private UserRepository userRepository;
-
     private ZipCodeClient zipCodeClient;
+    private UserMapper userMapper;
 
     @Override
     @Transactional(readOnly = true)
     public Page<UserDTO> findAll(Pageable pageable) {
         var userPage = userRepository.findAll(pageable);
-        return userPage.map(UserMapper::toUserDTO);
+        return userPage.map(userMapper::toUserDTO);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class UserService implements BaseService<UserDTO> {
     public UserDTO findById(Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find user with id: " + id));
-        return UserMapper.toUserDTO(user);
+        return userMapper.toUserDTO(user);
     }
 
     @Transactional(readOnly = true)
@@ -44,7 +44,7 @@ public class UserService implements BaseService<UserDTO> {
         var zipCodeData = zipCodeClient.getZipCodeInformation(user.getZipCode().replace("-", ""))
                 .orElseGet(ZipCodeData::new);
 
-        return UserMapper.toExtendedUserDTO(user, zipCodeData);
+        return userMapper.toExtendedUserDTO(user, zipCodeData);
     }
 
     @Transactional
@@ -56,8 +56,8 @@ public class UserService implements BaseService<UserDTO> {
 
     @Override
     public UserDTO save(UserDTO dto) {
-        var user = userRepository.save(UserMapper.toUser(dto));
-        return UserMapper.toUserDTO(user);
+        var user = userRepository.save(userMapper.toUser(dto));
+        return userMapper.toUserDTO(user);
     }
 
     @Override

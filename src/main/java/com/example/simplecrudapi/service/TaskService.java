@@ -19,12 +19,13 @@ public class TaskService implements BaseService<TaskDTO> {
 
     private TaskRepository taskRepository;
     private UserRepository userRepository;
+    private TaskMapper taskMapper;
 
     @Override
     @Transactional(readOnly = true)
     public Page<TaskDTO> findAll(Pageable pageable) {
         var taskPage = taskRepository.findAll(pageable);
-        return taskPage.map(TaskMapper::toTaskDTO);
+        return taskPage.map(taskMapper::toTaskDTO);
     }
 
     @Override
@@ -32,13 +33,13 @@ public class TaskService implements BaseService<TaskDTO> {
     public TaskDTO findById(Long id) {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Could not find task with id: " + id));
-        return TaskMapper.toTaskDTO(task);
+        return taskMapper.toTaskDTO(task);
     }
 
     @Override
     @Transactional
     public TaskDTO save(TaskDTO dto) {
-        var task = taskRepository.save(TaskMapper.toTask(dto));
+        var task = taskRepository.save(taskMapper.toTask(dto));
 
         Optional.ofNullable(dto.getUserId())
                 .ifPresent(userId -> {
@@ -47,7 +48,7 @@ public class TaskService implements BaseService<TaskDTO> {
                     task.setUser(user);
                 });
 
-        return TaskMapper.toTaskDTO(task);
+        return taskMapper.toTaskDTO(task);
     }
 
     @Override

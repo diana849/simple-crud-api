@@ -18,14 +18,14 @@ public class ProjectService implements BaseService<ProjectDTO> {
     public static final String ERROR_MESSAGE = "Could not find project with id: ";
 
     private ProjectRepository projectRepository;
-
     private TaskRepository taskRepository;
+    private ProjectMapper projectMapper;
 
     @Override
     @Transactional(readOnly = true)
     public Page<ProjectDTO> findAll(Pageable pageable) {
         var projectPage = projectRepository.findAll(pageable);
-        return projectPage.map(ProjectMapper::toProjectDTO);
+        return projectPage.map(projectMapper::toProjectDTO);
     }
 
     @Override
@@ -33,14 +33,14 @@ public class ProjectService implements BaseService<ProjectDTO> {
     public ProjectDTO findById(Long id) {
         var project = projectRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(ERROR_MESSAGE + id));
-        return ProjectMapper.toProjectDTO(project);
+        return projectMapper.toProjectDTO(project);
     }
 
     @Override
     @Transactional
     public ProjectDTO save(ProjectDTO dto) {
-        var project = projectRepository.save(ProjectMapper.toProject(dto));
-        return ProjectMapper.toProjectDTO(project);
+        var project = projectRepository.save(projectMapper.toProject(dto));
+        return projectMapper.toProjectDTO(project);
     }
 
     @Override
