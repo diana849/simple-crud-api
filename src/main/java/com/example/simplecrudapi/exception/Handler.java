@@ -17,14 +17,14 @@ public class Handler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public String notFoundException(NotFoundException ex) {
-        log.error("Error occurred: {}", ex.getMessage());
+        log.info("Error occurred: {}", ex.getMessage());
         return ex.getMessage();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        log.error("Error occurred: {}", ex.getMessage());
+        log.info("Error occurred: {}", ex.getMessage());
         var errors = new HashMap<String, String>();
 
         ex.getBindingResult().getFieldErrors()
